@@ -8,8 +8,9 @@ import os
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'
 
-# MongoDB connection
-client = MongoClient('mongodb+srv://admin1:iambatman@health.xvrmo.mongodb.net/?retryWrites=true&w=majority&appName=HEALTH')
+# MongoDB connection using environment variable
+mongo_uri = os.environ.get('MONGODB_URI', 'mongodb+srv://admin1:iambatman@health.xvrmo.mongodb.net/?retryWrites=true&w=majority&appName=HEALTH')
+client = MongoClient(mongo_uri)
 db = client['HEALTH']  # Specify the database you want to use
 users_collection = db['users']  # Collection for users
 patient_data_collection = db['patient_data']  # Collection for patient data
@@ -131,7 +132,6 @@ def health_data():
 
 # Doctor Dashboard Route
 @app.route('/doctor')
-@app.route('/doctor')
 def doctor_dashboard():
     if 'username' in session and session['role'] == 'doctor':
         # Fetch the user information from the session
@@ -170,7 +170,6 @@ def doctor_dashboard():
         return render_template('doctor.html', user=user, patients=patient_data, alerts=doctor_alerts)
     return redirect(url_for('login'))
 
-
 # Logout Route
 @app.route('/logout')
 def logout():
@@ -180,6 +179,7 @@ def logout():
 
 if __name__ == "__main__":
     app.run(debug=True)
+
 
 
 
