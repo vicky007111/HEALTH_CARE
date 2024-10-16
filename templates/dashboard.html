@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+</head>
+<body>
+    <h1>Welcome to the Dashboard!</h1>
+    <p>You are logged in as: {{ session['username'] }}</p>
+
+    <h2>Add Patient Data</h2>
+    <form action="{{ url_for('add_data') }}" method="POST">
+        <label for="blood_rate">Blood Rate:</label>
+        <input type="number" id="blood_rate" name="blood_rate" required>
+        
+        <!-- Add other health metrics here -->
+        
+        <button type="submit">Submit Data</button>
+    </form>
+
+    <h2><a href="{{ url_for('doctor_dashboard') }}">View Doctor Dashboard</a></h2>
+
+    <h2><a href="{{ url_for('logout') }}">Logout</a></h2>
+
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <ul>
+          {% for message in messages %}
+            <li>{{ message }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+</body>
+</html>

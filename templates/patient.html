@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Patient Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <h2>Welcome, {{ user['username'] }} (Patient)</h2>
+    <form action="/health_data" method="POST">
+        <input type="text" name="blood_rate" placeholder="Blood Rate" required>
+        <input type="text" name="sugar_level" placeholder="Sugar Level" required>
+        <input type="text" name="weight" placeholder="Weight" required>
+        <select name="doctor" required>
+            {% for doctor in doctors %}
+            <option value="{{ doctor['username'] }}">{{ doctor['username'] }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit">Submit Health Data</button>
+    </form>
+
+    <h3>Alerts</h3>
+    <ul>
+        {% with alerts = get_flashed_messages() %}
+            {% if alerts %}
+                {% for alert in alerts %}
+                    <li>{{ alert }}</li>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </ul>
+
+    <a href="/logout">Logout</a>
+    <a href="/">Home</a>
+</body>
+</html>
+
+
+
+
+
+

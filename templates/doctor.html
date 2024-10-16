@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Doctor Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <h2>Welcome, {{ user['username'] }} (Doctor)</h2>
+
+    <h3>Patient Data</h3>
+    <ul>
+        {% for patient in patients %}
+            <li>{{ patient['patient_name'] }} - Blood Rate: {{ patient['blood_rate'] }}, Sugar Level: {{ patient['sugar_level'] }}, Weight: {{ patient['weight'] }}</li>
+        {% endfor %}
+    </ul>
+
+    <h3>Patient Health Metrics Graph</h3>
+    <img src="{{ url_for('static', filename='patient_data_graph.png') }}" alt="Patient Health Metrics Graph" style="max-width: 100%; height: auto;">
+
+    <h3>Alerts</h3>
+    <ul>
+        {% for alert in alerts %}
+            <li>
+                {{ alert['patient'] }}: 
+                {% for message in alert['alerts'] %}
+                    {{ message }} (Data Entry: Blood Rate: {{ alert['data_entry']['blood_rate'] }}, Sugar Level: {{ alert['data_entry']['sugar_level'] }})
+                {% endfor %}
+            </li>
+        {% endfor %}
+    </ul>
+
+    <a href="/logout">Logout</a>
+    <a href="/">Home</a> <!-- Home link to return to the homepage -->
+</body>
+</html>
+
+
+
+

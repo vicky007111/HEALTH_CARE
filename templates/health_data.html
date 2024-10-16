@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Patient Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <h2>Welcome, {{ user['email'] }} (Patient)</h2>
+    <form action="/health_data" method="POST">
+        <input type="text" name="blood_rate" placeholder="Blood Rate" required>
+        <input type="text" name="sugar_level" placeholder="Sugar Level" required>
+        <input type="text" name="weight" placeholder="Weight" required>
+        <select name="doctor">
+            <option value="doctor1@example.com">Doctor 1</option>
+            <option value="doctor2@example.com">Doctor 2</option>
+        </select>
+        <button type="submit">Submit Data</button>
+    </form>
+</body>
+</html>
