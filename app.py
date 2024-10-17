@@ -126,21 +126,28 @@ def doctor_dashboard():
         }
         patients = patient_data_collection.find({"doctor": session['username']})
         patient_data = []
+        graphs = []
+
         for patient in patients:
             patient_data.append(patient)
 
-        graphs = []
-        for patient in patient_data:
-            blood_rates = [int(patient['blood_rate'])]
-            sugar_levels = [int(patient['sugar_level'])]
-            weights = [float(patient['weight'])]
+            patient_health_data = patient_data_collection.find({"patient_name": patient['patient_name']})
+
+            blood_rates = []
+            sugar_levels = []
+            weights = []
+
+            for data in patient_health_data:
+                blood_rates.append(int(data['blood_rate']))
+                sugar_levels.append(int(data['sugar_level']))
+                weights.append(float(data['weight']))
 
             plt.figure(figsize=(10, 5))
             plt.plot(blood_rates, label='Blood Rate')
             plt.plot(sugar_levels, label='Sugar Level')
             plt.plot(weights, label='Weight')
             plt.title(f'Health Metrics for {patient["patient_name"]}')
-            plt.xlabel('Metric Type')
+            plt.xlabel('Entries')
             plt.ylabel('Value')
             plt.legend()
             plt.grid()
@@ -155,6 +162,7 @@ def doctor_dashboard():
         doctor_alerts = alerts_collection.find({"doctor": session['username']})
         return render_template('doctor.html', user=user, patients=patient_data, alerts=doctor_alerts, graphs=graphs)
     return redirect(url_for('login'))
+
 
 @app.route('/logout')
 def logout():
