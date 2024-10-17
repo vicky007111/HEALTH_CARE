@@ -15,7 +15,6 @@
     </ul>
 
     <h3>Patient Health Metrics Graphs</h3>
-   
     {% for graph in graphs %}
         <h4>Graph for {{ patients[loop.index0]['patient_name'] }}</h4>
         <img src="{{ url_for('static', filename=graph) }}" alt="Patient Health Metrics Graph" style="max-width: 100%; height: auto;">
@@ -37,6 +36,3 @@
     <a href="/">Home</a> 
 </body>
 </html>
-
-
-
