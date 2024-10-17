@@ -5,7 +5,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import os
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static')
+
 app.secret_key = 'your_secret_key'
 
 # MongoDB connection using environment variable
