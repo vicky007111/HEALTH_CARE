@@ -134,40 +134,44 @@ def health_data():
 @app.route('/doctor')
 def doctor_dashboard():
     if 'username' in session and session['role'] == 'doctor':
-        # Fetch the user information from the session
         user = {
             'username': session['username'],
             'role': session['role']
         }
-        # Retrieve patient data from MongoDB for this doctor
+        # Retrieve all patients assigned to the doctor
         patients = patient_data_collection.find({"doctor": session['username']})
         patient_data = []
         for patient in patients:
             patient_data.append(patient)
 
-        # Generate graphs for patient data (if needed)
-        if patient_data:
-            blood_rates = [int(p['blood_rate']) for p in patient_data]
-            sugar_levels = [int(p['sugar_level']) for p in patient_data]
-            weights = [float(p['weight']) for p in patient_data]
+        # Create a graph for each patient
+        graphs = []
+        for patient in patient_data:
+            blood_rates = [int(patient['blood_rate'])]
+            sugar_levels = [int(patient['sugar_level'])]
+            weights = [float(patient['weight'])]
 
+            # Generate graph for this patient
             plt.figure(figsize=(10, 5))
             plt.plot(blood_rates, label='Blood Rate')
             plt.plot(sugar_levels, label='Sugar Level')
             plt.plot(weights, label='Weight')
-            plt.title('Patient Health Metrics')
-            plt.xlabel('Patient Index')
-            plt.ylabel('Metrics')
+            plt.title(f'Health Metrics for {patient["patient_name"]}')
+            plt.xlabel('Metric Type')
+            plt.ylabel('Value')
             plt.legend()
             plt.grid()
-            plt.savefig('static/patient_data_graph.png')  # Save graph as an image
+            graph_path = f'static/patient_{patient["patient_name"]}_data_graph.png'
+            plt.savefig(graph_path)  # Save graph as an image
             plt.close()
+
+            graphs.append(graph_path)  # Append each graph path to a list
 
         # Retrieve any alerts for the doctor
         doctor_alerts = alerts_collection.find({"doctor": session['username']})
 
-        # Pass the user, patient data, and alerts to the template
-        return render_template('doctor.html', user=user, patients=patient_data, alerts=doctor_alerts)
+        # Pass the user, patient data, alerts, and graphs to the template
+        return render_template('doctor.html', user=user, patients=patient_data, alerts=doctor_alerts, graphs=graphs)
     return redirect(url_for('login'))
 
 # Logout Route
