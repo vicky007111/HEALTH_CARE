@@ -1,9 +1,10 @@
-from flask import Flask, render_template, request, redirect, url_for, session, flash
+from flask import Flask, render_template, request, redirect, url_for, session, flash, send_file
 from pymongo import MongoClient
 from werkzeug.security import generate_password_hash, check_password_hash
 import numpy as np
 import matplotlib.pyplot as plt
 import os
+from io import BytesIO
 
 app = Flask(__name__, static_folder='static')
 app.secret_key = 'your_secret_key'
@@ -136,18 +137,20 @@ def doctor_dashboard():
             blood_rates = []
             sugar_levels = []
             weights = []
+            timestamps = []
 
             for data in patient_health_data:
                 blood_rates.append(int(data['blood_rate']))
                 sugar_levels.append(int(data['sugar_level']))
                 weights.append(float(data['weight']))
+                timestamps.append(data['_id'].generation_time)  # Assuming MongoDB ObjectId contains timestamp
 
             plt.figure(figsize=(10, 5))
-            plt.plot(blood_rates, label='Blood Rate')
-            plt.plot(sugar_levels, label='Sugar Level')
-            plt.plot(weights, label='Weight')
+            plt.plot(timestamps, blood_rates, label='Blood Rate', marker='o')
+            plt.plot(timestamps, sugar_levels, label='Sugar Level', marker='s')
+            plt.plot(timestamps, weights, label='Weight', marker='^')
             plt.title(f'Health Metrics for {patient["patient_name"]}')
-            plt.xlabel('Entries')
+            plt.xlabel('Timestamp')
             plt.ylabel('Value')
             plt.legend()
             plt.grid()
@@ -163,7 +166,6 @@ def doctor_dashboard():
         return render_template('doctor.html', user=user, patients=patient_data, alerts=doctor_alerts, graphs=graphs)
     return redirect(url_for('login'))
 
-
 @app.route('/logout')
 def logout():
     session.clear()
@@ -172,3 +174,4 @@ def logout():
 
 if __name__ == "__main__":
     app.run(debug=True)
+
