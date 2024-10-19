@@ -7,7 +7,7 @@ import os
 from io import BytesIO
 
 app = Flask(__name__, static_folder='static')
-app.secret_key = 'your_secret_key'
+#app.secret_key = 'your_secret_key'
 
 mongo_uri = os.environ.get('MONGODB_URI', 'mongodb+srv://admin1:iambatman@health.xvrmo.mongodb.net/?retryWrites=true&w=majority&appName=HEALTH')
 client = MongoClient(mongo_uri)
